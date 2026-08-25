@@ -3,22 +3,63 @@ package storage
 import (
 	// system packages
 	"encoding/json"
+	"fmt"
 	"os"
 
 	// local packages
 	"github.com/johnathantam/TodoTerminal/internal/storage/models"
 )
 
-// AddProjectToConfig registers projectName in the shared config.json,
-func AddProjectToConfig(appConfigPath, projectName string) error {
+func readProjectsConfig(appConfigPath string) (models.ProjectsConfig, error) {
 	data, err := os.ReadFile(appConfigPath)
+	if err != nil {
+		return models.ProjectsConfig{}, err
+	}
+
+	var config models.ProjectsConfig
+	if err := json.Unmarshal(data, &config); err != nil {
+		return models.ProjectsConfig{}, err
+	}
+
+	return config, nil
+}
+
+func writeProjectsConfig(appConfigPath string, config models.ProjectsConfig) error {
+	data, err := json.MarshalIndent(config, "", "  ")
 	if err != nil {
 		return err
 	}
 
-	// Unmarshal the JSON config
-	var config models.ProjectsConfig
-	if err := json.Unmarshal(data, &config); err != nil {
+	if err := os.WriteFile(appConfigPath, data, 0o644); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func GetActiveProjectInConfig(appConfigPath string) (string, error) {
+	config, err := readProjectsConfig(appConfigPath)
+	if err != nil {
+		return "", err
+	}
+
+	// Check the active project and return it
+	return config.ActiveProject, nil
+}
+
+func GetProjectsInConfig(appConfigPath string) ([]string, error) {
+	config, err := readProjectsConfig(appConfigPath)
+	if err != nil {
+		return nil, err
+	}
+
+	return config.Projects, nil
+}
+
+// AddProjectToConfig registers projectName in the shared config.json,
+func AddProjectToConfig(appConfigPath, projectName string) error {
+	config, err := readProjectsConfig(appConfigPath)
+	if err != nil {
 		return err
 	}
 
@@ -32,14 +73,7 @@ func AddProjectToConfig(appConfigPath, projectName string) error {
 
 	config.Projects = append(config.Projects, projectName)
 
-	// Marshal the updated config back to JSON
-	updatedData, err := json.MarshalIndent(config, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	// Write the updated JSON
-	err = os.WriteFile(appConfigPath, updatedData, 0o644)
+	err = writeProjectsConfig(appConfigPath, config)
 	if err != nil {
 		return err
 	}
@@ -49,15 +83,14 @@ func AddProjectToConfig(appConfigPath, projectName string) error {
 
 // RemoveProjectFromConfig removes projectName from the shared config.json,
 func RemoveProjectFromConfig(appConfigPath, projectName string) error {
-	data, err := os.ReadFile(appConfigPath)
+	config, err := readProjectsConfig(appConfigPath)
 	if err != nil {
 		return err
 	}
 
-	// Unmarshal the JSON config
-	var config models.ProjectsConfig
-	if err := json.Unmarshal(data, &config); err != nil {
-		return err
+	// Make sure the project to be removed isn't the active project
+	if config.ActiveProject == projectName {
+		return fmt.Errorf("Cannot remove the active project")
 	}
 
 	// Remove the project from the list if it exists
@@ -73,19 +106,12 @@ func RemoveProjectFromConfig(appConfigPath, projectName string) error {
 
 	if !found {
 		// project doesn't exist, nothing to do
-		return nil
+		return fmt.Errorf("Project doesn't exist in the config")
 	}
 
 	config.Projects = updatedProjects
 
-	// Marshal the updated config back to JSON
-	updatedData, err := json.MarshalIndent(config, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	// Write the updated JSON
-	err = os.WriteFile(appConfigPath, updatedData, 0o644)
+	err = writeProjectsConfig(appConfigPath, config)
 	if err != nil {
 		return err
 	}
@@ -94,14 +120,8 @@ func RemoveProjectFromConfig(appConfigPath, projectName string) error {
 }
 
 func ChangeActiveProjectInConfig(appConfigPath string, projectName string) error {
-	data, err := os.ReadFile(appConfigPath)
+	config, err := readProjectsConfig(appConfigPath)
 	if err != nil {
-		return err
-	}
-
-	// Unmarshal the JSON config
-	var config models.ProjectsConfig
-	if err := json.Unmarshal(data, &config); err != nil {
 		return err
 	}
 
@@ -121,14 +141,7 @@ func ChangeActiveProjectInConfig(appConfigPath string, projectName string) error
 	// Switch the active project in the config with the new project
 	config.ActiveProject = projectName
 
-	// Marshal the updated config back to JSON
-	updatedData, err := json.MarshalIndent(config, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	// Write the updated JSON
-	err = os.WriteFile(appConfigPath, updatedData, 0o644)
+	err = writeProjectsConfig(appConfigPath, config)
 	if err != nil {
 		return err
 	}

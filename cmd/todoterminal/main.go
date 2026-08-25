@@ -41,6 +41,8 @@ func run(args []string) error {
 
 	case "add-project":
 		return commands.AddProject(appContext, commandArguments)
+	case "remove-project":
+		return commands.RemoveProject(appContext, commandArguments)
 
 	default:
 		return fmt.Errorf("unknown command: %q", commandName)

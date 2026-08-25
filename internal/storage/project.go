@@ -107,5 +107,22 @@ func CreateProjectStructure(projectsDirPath string, projectName string) (string,
 }
 
 func RemoveProjectStructure(projectsDirPath string, projectName string) error {
+	projectDirectoryPath := filepath.Join(projectsDirPath, projectName)
+
+	// Make sure project exists
+	projectExists, err := ProjectExists(projectsDirPath, projectName)
+	if err != nil {
+		return err
+	}
+	if !projectExists {
+		return fmt.Errorf("project %q does not exist", projectName)
+	}
+
+	// Remove the project from the project directory path
+	err = os.RemoveAll(projectDirectoryPath)
+	if err != nil {
+		return fmt.Errorf("failed to remove project %q: %w", projectName, err)
+	}
+
 	return nil
 }

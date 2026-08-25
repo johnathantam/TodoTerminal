@@ -103,9 +103,6 @@ func ProjectExists(projectsDirectoryPath, projectName string) (bool, error) {
 
 	projectInfo, err := os.Stat(projectDirectoryPath)
 	if err != nil {
-		if os.IsNotExist(err) {
-			return false, nil
-		}
 		return false, err
 	}
 
