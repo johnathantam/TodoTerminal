@@ -3,6 +3,7 @@ package storage
 import (
 	// system packages
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"time"
@@ -11,9 +12,10 @@ import (
 	"github.com/johnathantam/TodoTerminal/internal/storage/models"
 )
 
-// CreateStorageDirectory creates a project directory for storing application data in the user's configuration directory.
-func CreateProjectStorageDirectory(rootPath, projectName string) (string, error) {
-	projectPath := filepath.Join(rootPath, projectName)
+// EnsureProjectDir ensures a project's directory exists inside the given
+// projects folder, creating it if needed.
+func EnsureProjectDir(projectsDirPath string, projectName string) (string, error) {
+	projectPath := filepath.Join(projectsDirPath, projectName)
 	if err := os.MkdirAll(projectPath, 0o755); err != nil {
 		return "", err
 	}
@@ -21,86 +23,89 @@ func CreateProjectStorageDirectory(rootPath, projectName string) (string, error)
 	return projectPath, nil
 }
 
-func CreateProjectStorageMetadataFile(projectPath, projectName string) (string, error) {
-	projectStorageMetadataPath := filepath.Join(projectPath, projectName+".json")
-
-	if _, err := os.Stat(projectStorageMetadataPath); err == nil {
-		// File already exists
-		return "", nil
+// EnsureProjectMetadataFile ensures a project's metadata file exists,
+// creating it with default values if it doesn't.
+func EnsureProjectMetadataFile(projectDirPath string, projectName string) (string, error) {
+	metadataPath := filepath.Join(projectDirPath, projectName+".json")
+	if _, err := os.Stat(metadataPath); err == nil {
+		return metadataPath, nil // already exists
 	} else if !os.IsNotExist(err) {
-		// Some other filesystem error occurred
-		return "", err
+		return "", err // some other filesystem error occurred
 	}
 
-	// Create project metadata
 	metadata := models.ProjectMetadata{
 		Name:      projectName,
 		CreatedAt: time.Now(),
 	}
 
-	// Marshal the metadata to JSON
 	data, err := json.MarshalIndent(metadata, "", "  ")
 	if err != nil {
 		return "", err
 	}
 
-	// Write the JSON data to a file
-	err = os.WriteFile(projectStorageMetadataPath, data, 0o644)
-	if err != nil {
+	if err := os.WriteFile(metadataPath, data, 0o644); err != nil {
 		return "", err
 	}
 
-	return projectStorageMetadataPath, nil
+	return metadataPath, nil
 }
 
-func CreateProjectTodoListMetadataFile(projectPath, projectName string) (string, error) {
-	projectTodoListMetadataPath := filepath.Join(projectPath, projectName+"-todo-list.json")
+// EnsureProjectTodoListFile ensures a project's todo list file exists,
+// creating it empty if it doesn't.
+func EnsureProjectTodoListFile(projectDirPath string, projectName string) (string, error) {
+	todoListPath := filepath.Join(projectDirPath, projectName+"-todo-list.json")
 
-	if _, err := os.Stat(projectTodoListMetadataPath); err == nil {
-		// File already exists
-		return "", nil
+	if _, err := os.Stat(todoListPath); err == nil {
+		return todoListPath, nil // already exists
 	} else if !os.IsNotExist(err) {
-		// Some other filesystem error occurred
-		return "", err
+		return "", err // some other filesystem error occurred
 	}
 
-	// Create an empty todo list
 	todoList := models.TodoList{
 		Todos: []models.TodoItem{},
 	}
 
-	// Marshal the todo list to JSON
 	data, err := json.MarshalIndent(todoList, "", "  ")
 	if err != nil {
 		return "", err
 	}
 
-	// Write the JSON data to a file
-	err = os.WriteFile(projectTodoListMetadataPath, data, 0o644)
-	if err != nil {
+	if err := os.WriteFile(todoListPath, data, 0o644); err != nil {
 		return "", err
 	}
 
-	return projectTodoListMetadataPath, nil
+	return todoListPath, nil
 }
 
-func CreateProject(rootPath, projectName string) (string, error) {
-	projectPath, err := CreateProjectStorageDirectory(rootPath, projectName)
+// CreateProjectStructure creates a new project — directory, metadata file,
+// todo list file, and a config.json entry — and registers it as a new
+// project. Returns an error if a project with this name already exists.
+func CreateProjectStructure(projectsDirPath string, projectName string) (string, error) {
+	projectDirectoryPath := filepath.Join(projectsDirPath, projectName)
+
+	projectExists, err := ProjectExists(projectsDirPath, projectName)
 	if err != nil {
 		return "", err
 	}
+	if projectExists {
+		return "", fmt.Errorf("project %q already exists", projectName)
+	}
 
-	if _, err := CreateProjectStorageMetadataFile(projectPath, projectName); err != nil {
+	if _, err := EnsureProjectDir(projectsDirPath, projectName); err != nil {
 		return "", err
 	}
 
-	if _, err := CreateProjectTodoListMetadataFile(projectPath, projectName); err != nil {
+	if _, err := EnsureProjectMetadataFile(projectDirectoryPath, projectName); err != nil {
 		return "", err
 	}
 
-	if err := AddProjectToConfig(rootPath, projectName); err != nil {
+	if _, err := EnsureProjectTodoListFile(projectDirectoryPath, projectName); err != nil {
 		return "", err
 	}
 
-	return projectPath, nil
+	return projectDirectoryPath, nil
+}
+
+func RemoveProjectStructure(projectsDirPath string, projectName string) error {
+	return nil
 }

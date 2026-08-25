@@ -9,24 +9,34 @@ import (
 	"github.com/johnathantam/TodoTerminal/internal/storage"
 )
 
-func Init(args []string) error {
-	if len(args) != 1 {
+func Init(commandArguments []string) error {
+	if len(commandArguments) != 1 {
 		return fmt.Errorf("usage: todo init <project-name>")
 	}
 
-	projectName := args[0]
+	projectName := commandArguments[0]
 
-	rootPath, err := storage.InitializeRoot()
+	appPaths, err := storage.CreateAppStructure()
 	if err != nil {
-		return fmt.Errorf("initializing project storage: %w", err)
+		return err
 	}
 
-	projectPath, err := storage.CreateProject(rootPath, projectName)
+	projectPath, err := storage.CreateProjectStructure(appPaths.AppProjectsDirectoryPath, projectName)
 	if err != nil {
-		return fmt.Errorf("project %q was not created: %w", projectName, err)
+		return err
 	}
 
-	color.Green("Project storage initialized at: %s", rootPath)
+	err = storage.AddProjectToConfig(appPaths.AppConfigPath, projectName)
+	if err != nil {
+		return err
+	}
+
+	err = storage.ChangeActiveProjectInConfig(appPaths.AppConfigPath, projectName)
+	if err != nil {
+		return err
+	}
+
+	color.Green("Project storage initialized at: %s", appPaths.AppDirectoryPath)
 	color.Green("Project %q created at: %s", projectName, projectPath)
 
 	return nil
