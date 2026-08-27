@@ -1,0 +1,4 @@
+.todoterminal/
+
+# Added by goreleaser init:
+dist/
