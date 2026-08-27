@@ -12,7 +12,7 @@ import (
 
 func RemoveTask(appContext app.AppContext, commandArguments []string) error {
 	if len(commandArguments) != 1 {
-		return fmt.Errorf("usage: todo remove-task [taskID]")
+		return fmt.Errorf("usage: todo task remove [taskID]")
 	}
 
 	// Grab task info

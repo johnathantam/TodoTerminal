@@ -10,7 +10,7 @@ import (
 	"github.com/johnathantam/TodoTerminal/internal/storage/models"
 )
 
-func readProjectsConfig(appConfigPath string) (models.ProjectsConfig, error) {
+func readProjectsInConfig(appConfigPath string) (models.ProjectsConfig, error) {
 	data, err := os.ReadFile(appConfigPath)
 	if err != nil {
 		return models.ProjectsConfig{}, err
@@ -24,7 +24,7 @@ func readProjectsConfig(appConfigPath string) (models.ProjectsConfig, error) {
 	return config, nil
 }
 
-func writeProjectsConfig(appConfigPath string, config models.ProjectsConfig) error {
+func writeProjectsInConfig(appConfigPath string, config models.ProjectsConfig) error {
 	data, err := json.MarshalIndent(config, "", "  ")
 	if err != nil {
 		return err
@@ -38,7 +38,7 @@ func writeProjectsConfig(appConfigPath string, config models.ProjectsConfig) err
 }
 
 func GetActiveProjectInConfig(appConfigPath string) (string, error) {
-	config, err := readProjectsConfig(appConfigPath)
+	config, err := readProjectsInConfig(appConfigPath)
 	if err != nil {
 		return "", err
 	}
@@ -48,7 +48,7 @@ func GetActiveProjectInConfig(appConfigPath string) (string, error) {
 }
 
 func GetProjectsInConfig(appConfigPath string) ([]string, error) {
-	config, err := readProjectsConfig(appConfigPath)
+	config, err := readProjectsInConfig(appConfigPath)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func GetProjectsInConfig(appConfigPath string) ([]string, error) {
 
 // AddProjectToConfig registers projectName in the shared config.json,
 func AddProjectToConfig(appConfigPath, projectName string) error {
-	config, err := readProjectsConfig(appConfigPath)
+	config, err := readProjectsInConfig(appConfigPath)
 	if err != nil {
 		return err
 	}
@@ -73,7 +73,7 @@ func AddProjectToConfig(appConfigPath, projectName string) error {
 
 	config.Projects = append(config.Projects, projectName)
 
-	err = writeProjectsConfig(appConfigPath, config)
+	err = writeProjectsInConfig(appConfigPath, config)
 	if err != nil {
 		return err
 	}
@@ -83,7 +83,7 @@ func AddProjectToConfig(appConfigPath, projectName string) error {
 
 // RemoveProjectFromConfig removes projectName from the shared config.json,
 func RemoveProjectFromConfig(appConfigPath, projectName string) error {
-	config, err := readProjectsConfig(appConfigPath)
+	config, err := readProjectsInConfig(appConfigPath)
 	if err != nil {
 		return err
 	}
@@ -104,9 +104,10 @@ func RemoveProjectFromConfig(appConfigPath, projectName string) error {
 		return fmt.Errorf("Project doesn't exist in the config")
 	}
 
+	// Update the projects without the project to be removed
 	config.Projects = updatedProjects
 
-	err = writeProjectsConfig(appConfigPath, config)
+	err = writeProjectsInConfig(appConfigPath, config)
 	if err != nil {
 		return err
 	}
@@ -115,7 +116,7 @@ func RemoveProjectFromConfig(appConfigPath, projectName string) error {
 }
 
 func ChangeActiveProjectInConfig(appConfigPath string, projectName string) error {
-	config, err := readProjectsConfig(appConfigPath)
+	config, err := readProjectsInConfig(appConfigPath)
 	if err != nil {
 		return err
 	}
@@ -136,7 +137,7 @@ func ChangeActiveProjectInConfig(appConfigPath string, projectName string) error
 	// Switch the active project in the config with the new project
 	config.ActiveProject = projectName
 
-	err = writeProjectsConfig(appConfigPath, config)
+	err = writeProjectsInConfig(appConfigPath, config)
 	if err != nil {
 		return err
 	}

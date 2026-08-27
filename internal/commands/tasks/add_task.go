@@ -12,7 +12,7 @@ import (
 
 func AddTask(appContext app.AppContext, commandArguments []string) error {
 	if len(commandArguments) < 1 || len(commandArguments) > 2 {
-		return fmt.Errorf("usage: todo add-task <title> [description]")
+		return fmt.Errorf("usage: todo task add <title> [description]")
 	}
 
 	// Grab task info

@@ -9,7 +9,7 @@ import (
 
 func GetTask(appContext app.AppContext, commandArguments []string) error {
 	if len(commandArguments) != 1 {
-		return fmt.Errorf("usage: todo get-task <taskID>")
+		return fmt.Errorf("usage: todo task get <taskID>")
 	}
 
 	// get the taskID

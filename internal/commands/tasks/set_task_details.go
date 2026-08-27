@@ -10,7 +10,7 @@ import (
 
 func SetTaskDetails(appContext app.AppContext, commandArguments []string) error {
 	if len(commandArguments) != 3 {
-		return fmt.Errorf("usage: todo set-task-details <taskID> [newTaskTitle] (newTaskDescription)")
+		return fmt.Errorf("usage: todo task details <taskID> [newTaskTitle] (newTaskDescription)")
 	}
 
 	// Grab the parameters

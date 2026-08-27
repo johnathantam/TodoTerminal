@@ -98,20 +98,20 @@ func IsAppStructureValid(rootPath string) (bool, error) {
 	return true, nil
 }
 
-func ValidateProjectName(projectName string) error {
+func IsProjectNameValid(projectName string) (bool, error) {
 	if projectName == "" {
-		return fmt.Errorf("project name cannot be empty")
+		return false, fmt.Errorf("project name cannot be empty")
 	}
 
 	if projectName == "." || projectName == ".." {
-		return fmt.Errorf("invalid project name %q", projectName)
+		return false, fmt.Errorf("invalid project name %q", projectName)
 	}
 
 	if strings.ContainsAny(projectName, `/\`) {
-		return fmt.Errorf("project name cannot contain path separators")
+		return false, fmt.Errorf("project name cannot contain path separators")
 	}
 
-	return nil
+	return true, nil
 }
 
 // ProjectExists reports whether a project directory exists inside the given

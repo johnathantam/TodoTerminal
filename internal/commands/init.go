@@ -14,7 +14,12 @@ func Init(commandArguments []string) error {
 		return fmt.Errorf("usage: todo init <project-name>")
 	}
 
+	// Grab project name
 	projectName := commandArguments[0]
+	// Check if the name is valid
+	if _, err := storage.IsProjectNameValid(projectName); err != nil {
+		return err
+	}
 
 	appPaths, err := storage.CreateAppStructure()
 	if err != nil {

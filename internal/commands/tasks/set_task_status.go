@@ -31,7 +31,7 @@ func selectTaskStatusByGUI() (models.TodoStatus, error) {
 
 func SetTaskStatus(appContext app.AppContext, commandArguments []string) error {
 	if len(commandArguments) < 1 || len(commandArguments) > 2 {
-		return fmt.Errorf("usage: todo set-task-status <task-id> [status]")
+		return fmt.Errorf("usage: todo task status <task-id> [status]")
 	}
 
 	// Get task ID

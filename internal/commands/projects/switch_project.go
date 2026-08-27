@@ -10,7 +10,7 @@ import (
 
 func SwitchProject(appContext app.AppContext, commandArguments []string) error {
 	if len(commandArguments) != 1 {
-		return fmt.Errorf("usage: todo switch-project <project-name>")
+		return fmt.Errorf("usage: todo project switch <project-name>")
 	}
 
 	// Switch active project

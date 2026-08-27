@@ -12,18 +12,18 @@ import (
 
 func RemoveProject(appContext app.AppContext, commandArguments []string) error {
 	if len(commandArguments) != 1 {
-		return fmt.Errorf("usage: todo remove-project <project-name>")
+		return fmt.Errorf("usage: todo project remove <project-name>")
 	}
 
+	// Grab project name
 	projectName := commandArguments[0]
-
-	// Make sure the project to remove isn't the current active project
-	currentActiveProjectName, err := storage.GetActiveProjectInConfig(appContext.AppPaths.AppConfigPath)
+	// Make sure user isn't deleting the current active project
+	currentProjectName, err := storage.GetActiveProjectInConfig(appContext.AppPaths.AppConfigPath)
 	if err != nil {
 		return err
 	}
-	if currentActiveProjectName == projectName {
-		return fmt.Errorf("Cannot remove the active project")
+	if currentProjectName == projectName {
+		return fmt.Errorf("Can't remove the current active project '%s'", currentProjectName)
 	}
 
 	// Remove the project from the projects folder

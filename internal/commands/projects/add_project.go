@@ -12,11 +12,17 @@ import (
 
 func AddProject(appContext app.AppContext, commandArguments []string) error {
 	if len(commandArguments) != 1 {
-		return fmt.Errorf("usage: todo add-project <project-name>")
+		return fmt.Errorf("usage: todo project add <project-name>")
+	}
+
+	// Grab project name
+	projectName := commandArguments[0]
+	// Check if the name is valid
+	if _, err := storage.IsProjectNameValid(projectName); err != nil {
+		return err
 	}
 
 	// Create the project
-	projectName := commandArguments[0]
 	_, err := storage.CreateProjectStructure(appContext.AppPaths.AppProjectsDirectoryPath, projectName)
 	if err != nil {
 		return err

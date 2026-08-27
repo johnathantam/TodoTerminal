@@ -47,7 +47,7 @@ func printTodoSection(
 
 func GetTaskList(appContext app.AppContext, commandArguments []string) error {
 	if len(commandArguments) != 0 {
-		return fmt.Errorf("usage: todo add-project")
+		return fmt.Errorf("usage: todo task list")
 	}
 
 	// Get active project
