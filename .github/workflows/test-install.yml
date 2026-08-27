@@ -1,0 +1,82 @@
+name: test-install
+
+on:
+  # Run automatically after a release is published
+  release:
+    types: [published]
+  # Allow manually triggering from the Actions tab too
+  workflow_dispatch:
+
+jobs:
+  test-unix:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Install
+        run: curl -fsSL https://raw.githubusercontent.com/johnathantam/TodoTerminal/main/install.sh | sh
+
+      - name: Verify install
+        run: |
+          which todo
+          todo help
+
+      - name: Run a real command
+        run: |
+          mkdir -p /tmp/test-project && cd /tmp/test-project
+          todo init smoke-test
+          todo project list
+          todo task add "test task" "created by CI"
+          todo task list
+
+      - name: Uninstall
+        run: curl -fsSL https://raw.githubusercontent.com/johnathantam/TodoTerminal/main/uninstall.sh | sh
+
+      - name: Verify uninstall
+        run: |
+          if command -v todo >/dev/null 2>&1; then
+            echo "FAIL: todo still resolves after uninstall"
+            exit 1
+          else
+            echo "OK: todo is no longer on PATH"
+          fi
+
+  test-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Install
+        shell: pwsh
+        run: irm https://raw.githubusercontent.com/johnathantam/TodoTerminal/main/install.ps1 | iex
+
+      - name: Verify install
+        shell: pwsh
+        run: |
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","User") + ";" + [System.Environment]::GetEnvironmentVariable("Path","Machine")
+          todo help
+
+      - name: Run a real command
+        shell: pwsh
+        run: |
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","User") + ";" + [System.Environment]::GetEnvironmentVariable("Path","Machine")
+          New-Item -ItemType Directory -Force -Path C:\test-project | Out-Null
+          Set-Location C:\test-project
+          todo init smoke-test
+          todo project list
+          todo task add "test task" "created by CI"
+          todo task list
+
+      - name: Uninstall
+        shell: pwsh
+        run: irm https://raw.githubusercontent.com/johnathantam/TodoTerminal/main/uninstall.ps1 | iex
+
+      - name: Verify uninstall
+        shell: pwsh
+        run: |
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","User") + ";" + [System.Environment]::GetEnvironmentVariable("Path","Machine")
+          if (Get-Command todo -ErrorAction SilentlyContinue) {
+            Write-Error "FAIL: todo still resolves after uninstall"
+            exit 1
+          } else {
+            Write-Host "OK: todo is no longer on PATH"
+          }
