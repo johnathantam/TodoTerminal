@@ -135,7 +135,7 @@ func ChangeActiveProjectInConfig(appConfigPath string, projectName string) error
 	}
 	if !found {
 		// project doesn't exist, nothing to do
-		return nil
+		return fmt.Errorf("Can't switch project. Project %s doesn't exist", projectName)
 	}
 
 	// Switch the active project in the config with the new project

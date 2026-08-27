@@ -2,8 +2,8 @@ package app
 
 import (
 	// System packages.
-
 	"fmt"
+	"path/filepath"
 
 	// Local packages.
 	"github.com/johnathantam/TodoTerminal/internal/storage"
@@ -50,4 +50,15 @@ func (appContext AppContext) RequireProjectExists(projectName string) error {
 	}
 
 	return nil
+}
+
+func (appContext AppContext) FindProjectDirectoryPath(projectName string) (string, error) {
+	if err := appContext.RequireProjectExists(projectName); err != nil {
+		return "", err
+	}
+
+	return filepath.Join(
+		appContext.AppPaths.AppProjectsDirectoryPath,
+		projectName,
+	), nil
 }

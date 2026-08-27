@@ -12,6 +12,68 @@ import (
 	"github.com/johnathantam/TodoTerminal/internal/storage/models"
 )
 
+func ReadProjectMetadata(projectDirectoryPath string, projectName string) (models.ProjectMetadata, error) {
+	metadataPath := filepath.Join(projectDirectoryPath, projectName+".json")
+
+	data, err := os.ReadFile(metadataPath)
+	if err != nil {
+		return models.ProjectMetadata{}, fmt.Errorf("reading project metadata: %w", err)
+	}
+
+	var metadata models.ProjectMetadata
+	if err := json.Unmarshal(data, &metadata); err != nil {
+		return models.ProjectMetadata{}, fmt.Errorf("decoding project metadata: %w", err)
+	}
+
+	return metadata, nil
+}
+
+func WriteProjectMetadata(projectDirectoryPath string, projectName string, metadata models.ProjectMetadata) error {
+	metadataPath := filepath.Join(projectDirectoryPath, projectName+".json")
+
+	data, err := json.MarshalIndent(metadata, "", "  ")
+	if err != nil {
+		return fmt.Errorf("encoding project metadata: %w", err)
+	}
+
+	if err := os.WriteFile(metadataPath, data, 0o644); err != nil {
+		return fmt.Errorf("writing project metadata: %w", err)
+	}
+
+	return nil
+}
+
+func ReadProjectTodoList(projectDirectoryPath string, projectName string) (models.TodoList, error) {
+	taskListPath := filepath.Join(projectDirectoryPath, projectName+"-todo-list.json")
+
+	data, err := os.ReadFile(taskListPath)
+	if err != nil {
+		return models.TodoList{}, fmt.Errorf("reading task list: %w", err)
+	}
+
+	var taskList models.TodoList
+	if err := json.Unmarshal(data, &taskList); err != nil {
+		return models.TodoList{}, fmt.Errorf("decoding task list: %w", err)
+	}
+
+	return taskList, nil
+}
+
+func WriteProjectTodoList(projectDirectoryPath string, projectName string, taskList models.TodoList) error {
+	taskListPath := filepath.Join(projectDirectoryPath, projectName+"-todo-list.json")
+
+	data, err := json.MarshalIndent(taskList, "", "  ")
+	if err != nil {
+		return fmt.Errorf("encoding task list: %w", err)
+	}
+
+	if err := os.WriteFile(taskListPath, data, 0o644); err != nil {
+		return fmt.Errorf("writing task list: %w", err)
+	}
+
+	return nil
+}
+
 // EnsureProjectDir ensures a project's directory exists inside the given
 // projects folder, creating it if needed.
 func EnsureProjectDir(projectsDirPath string, projectName string) (string, error) {

@@ -6,5 +6,4 @@ const (
 	TodoStatusPending    TodoStatus = "pending"
 	TodoStatusInProgress TodoStatus = "in_progress"
 	TodoStatusCompleted  TodoStatus = "completed"
-	TodoStatusCancelled  TodoStatus = "cancelled"
 )

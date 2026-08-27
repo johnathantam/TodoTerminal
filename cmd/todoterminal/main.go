@@ -9,6 +9,8 @@ import (
 	"github.com/fatih/color"
 	"github.com/johnathantam/TodoTerminal/internal/app"
 	"github.com/johnathantam/TodoTerminal/internal/commands"
+	projectsCommands "github.com/johnathantam/TodoTerminal/internal/commands/projects"
+	tasksCommands "github.com/johnathantam/TodoTerminal/internal/commands/tasks"
 )
 
 func main() {
@@ -36,13 +38,33 @@ func run(args []string) error {
 	}
 
 	switch commandName {
-	// case "add-task":
-	//     return commands.AddTask(appContext, commandArgs)
 
+	case "help":
+		return commands.Help()
+
+	// Commands related to projects
 	case "add-project":
-		return commands.AddProject(appContext, commandArguments)
+		return projectsCommands.AddProject(appContext, commandArguments)
 	case "remove-project":
-		return commands.RemoveProject(appContext, commandArguments)
+		return projectsCommands.RemoveProject(appContext, commandArguments)
+	case "switch-project":
+		return projectsCommands.SwitchProject(appContext, commandArguments)
+	case "get-projects":
+		return projectsCommands.GetProjectList(appContext)
+
+	// Commands related to tasks
+	case "add-task":
+		return tasksCommands.AddTask(appContext, commandArguments)
+	case "remove-task":
+		return tasksCommands.RemoveTask(appContext, commandArguments)
+	case "get-task":
+		return tasksCommands.GetTask(appContext, commandArguments)
+	case "get-tasks":
+		return tasksCommands.GetTaskList(appContext)
+	case "set-task-details":
+		return tasksCommands.SetTaskDetails(appContext, commandArguments)
+	case "set-task-status":
+		return tasksCommands.SetTaskStatus(appContext, commandArguments)
 
 	default:
 		return fmt.Errorf("unknown command: %q", commandName)
