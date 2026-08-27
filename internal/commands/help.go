@@ -1,23 +1,99 @@
 package commands
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/fatih/color"
+)
+
+var (
+	titleColor   = color.New(color.Bold)
+	sectionColor = color.New(color.Bold)
+	commandColor = color.New(color.FgCyan)
+)
+
+func printCommand(command, description string) {
+	const commandWidth = 35
+
+	fmt.Printf("  ")
+	commandColor.Printf("%-*s", commandWidth, command)
+	fmt.Printf("%s\n", description)
+}
 
 func Help() error {
-	fmt.Println(`TodoTerminal commands:
+	titleColor.Println("TodoTerminal")
 
-  init <project-name>              Initialize the app
-  add-project <project-name>       Create a project
-  remove-project <project-name>    Remove a project
-  switch-project <project-name>    Switch active project
-  get-projects                     List projects
+	fmt.Println()
+	fmt.Println("Usage:")
+	fmt.Printf("  ")
+	commandColor.Printf("todo")
+	fmt.Println(" <command> [arguments]")
 
-  add-task <title> [description]   Add a task
-  remove-task <task-id>            Remove a task
-  get-task <task-id>               Show a task
-  get-tasks                        List tasks
-  set-task-details <task-id>       Update task details
-  set-task-status <task-id> [status] Update task status
-	`)
+	fmt.Println()
+	sectionColor.Println("Commands:")
+
+	printCommand(
+		"init <project-name>",
+		"Initialize a new project",
+	)
+
+	fmt.Println()
+	sectionColor.Println("Project commands:")
+
+	printCommand(
+		"project add <project-name>",
+		"Add a project",
+	)
+
+	printCommand(
+		"project remove <project-name>",
+		"Remove a project",
+	)
+
+	printCommand(
+		"project switch <project-name>",
+		"Switch the active project",
+	)
+
+	printCommand(
+		"project list",
+		"List all projects",
+	)
+
+	fmt.Println()
+	sectionColor.Println("Task commands:")
+
+	printCommand(
+		"task add <title> [description]",
+		"Add a task",
+	)
+
+	printCommand(
+		"task remove <task-id>",
+		"Remove a task",
+	)
+
+	printCommand(
+		"task get <task-id>",
+		"Get a task",
+	)
+
+	printCommand(
+		"task list",
+		"List all tasks",
+	)
+
+	printCommand(
+		"task details <task-id>",
+		"Show task details",
+	)
+
+	printCommand(
+		"task status <task-id> [status]",
+		"Change task status",
+	)
+
+	fmt.Println()
 
 	return nil
 }

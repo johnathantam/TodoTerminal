@@ -39,7 +39,7 @@ func FindLocationOfAppPaths() (AppPaths, error) {
 		currentPath = parentPath
 	}
 
-	return AppPaths{}, errors.New("TodoTerminal project not found")
+	return AppPaths{}, errors.New("TodoTerminal project not found, run todo init [projectName] or todo help to debug")
 }
 
 // IsAppStructureValid reports whether the expected TodoTerminal directory

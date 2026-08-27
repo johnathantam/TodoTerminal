@@ -10,7 +10,11 @@ import (
 	"github.com/johnathantam/TodoTerminal/internal/storage"
 )
 
-func GetProjectList(appContext app.AppContext) error {
+func GetProjectList(appContext app.AppContext, commandArguments []string) error {
+	if len(commandArguments) != 0 {
+		return fmt.Errorf("usage: todo add-project")
+	}
+
 	projectNames, err := storage.GetProjectsInConfig(appContext.AppPaths.AppConfigPath)
 	if err != nil {
 		return err
