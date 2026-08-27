@@ -3,8 +3,10 @@ package storage
 import (
 	// system packages
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 // FindAppPaths searches from the current working directory upward
@@ -94,6 +96,22 @@ func IsAppStructureValid(rootPath string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func ValidateProjectName(projectName string) error {
+	if projectName == "" {
+		return fmt.Errorf("project name cannot be empty")
+	}
+
+	if projectName == "." || projectName == ".." {
+		return fmt.Errorf("invalid project name %q", projectName)
+	}
+
+	if strings.ContainsAny(projectName, `/\`) {
+		return fmt.Errorf("project name cannot contain path separators")
+	}
+
+	return nil
 }
 
 // ProjectExists reports whether a project directory exists inside the given

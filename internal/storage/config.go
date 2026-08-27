@@ -88,11 +88,6 @@ func RemoveProjectFromConfig(appConfigPath, projectName string) error {
 		return err
 	}
 
-	// Make sure the project to be removed isn't the active project
-	if config.ActiveProject == projectName {
-		return fmt.Errorf("Cannot remove the active project")
-	}
-
 	// Remove the project from the list if it exists
 	updatedProjects := make([]string, 0, len(config.Projects))
 	found := false

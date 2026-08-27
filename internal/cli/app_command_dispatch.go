@@ -11,10 +11,11 @@ import (
 type AppCommand func(app.AppContext, []string) error
 
 var projectCommands = map[string]AppCommand{
-	"add":    projects.AddProject,
-	"remove": projects.RemoveProject,
-	"switch": projects.SwitchProject,
-	"list":   projects.GetProjectList,
+	"add":     projects.AddProject,
+	"remove":  projects.RemoveProject,
+	"switch":  projects.SwitchProject,
+	"current": projects.GetCurrentProject,
+	"list":    projects.GetProjectList,
 }
 
 var taskCommands = map[string]AppCommand{
@@ -24,6 +25,7 @@ var taskCommands = map[string]AppCommand{
 	"list":    tasks.GetTaskList,
 	"details": tasks.SetTaskDetails,
 	"status":  tasks.SetTaskStatus,
+	"clear":   tasks.ClearTasks,
 }
 
 func AppCommandDispatch(appContext app.AppContext, commandArguments []string) error {

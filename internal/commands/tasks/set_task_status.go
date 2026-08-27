@@ -9,15 +9,6 @@ import (
 	"github.com/johnathantam/TodoTerminal/internal/storage/models"
 )
 
-func isValidTaskStatus(status models.TodoStatus) bool {
-	switch status {
-	case models.TodoStatusPending, models.TodoStatusInProgress, models.TodoStatusCompleted:
-		return true
-	default:
-		return false
-	}
-}
-
 func selectTaskStatusByGUI() (models.TodoStatus, error) {
 	var status models.TodoStatus
 
@@ -51,7 +42,7 @@ func SetTaskStatus(appContext app.AppContext, commandArguments []string) error {
 	var err error
 	if len(commandArguments) == 2 {
 		newStatus = models.TodoStatus(commandArguments[1])
-		if !isValidTaskStatus(newStatus) {
+		if !newStatus.IsValid() {
 			return fmt.Errorf("invalid task status %q", newStatus)
 		}
 	} else {

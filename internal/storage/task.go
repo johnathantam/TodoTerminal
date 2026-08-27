@@ -56,12 +56,12 @@ func SetTaskDetailsInProject(projectDirectoryPath string, projectName string, ta
 		return nil
 	}
 
-	return nil
+	return fmt.Errorf("task %q does not exist", taskID)
 }
 
 func SetTaskStatusInProject(projectDirectoryPath string, projectName string, taskID string, newStatus models.TodoStatus) error {
 	// Check if the status is one of the set statuses
-	if newStatus != models.TodoStatusPending && newStatus != models.TodoStatusInProgress && newStatus != models.TodoStatusCompleted {
+	if !newStatus.IsValid() {
 		return fmt.Errorf("Can't change task status to %s. Must be pending, in progress, or completed", newStatus)
 	}
 
@@ -84,6 +84,40 @@ func SetTaskStatusInProject(projectDirectoryPath string, projectName string, tas
 		}
 
 		return nil
+	}
+
+	return fmt.Errorf("task %q does not exist", taskID)
+}
+
+func ClearTasksInProject(projectDirectoryPath string, projectName string, status *models.TodoStatus) error {
+	if status != nil && !status.IsValid() {
+		return fmt.Errorf("invalid task status %q", *status)
+	}
+
+	// find todo list
+	todoList, err := ReadProjectTodoList(projectDirectoryPath, projectName)
+	if err != nil {
+		return err
+	}
+
+	// Clear every task in status or all of them
+	if status == nil {
+		todoList.Todos = []models.TodoItem{}
+	} else {
+		remainingTasks := make([]models.TodoItem, 0)
+		for _, task := range todoList.Todos {
+			if task.Status != *status {
+				remainingTasks = append(remainingTasks, task)
+			}
+		}
+
+		todoList.Todos = remainingTasks
+	}
+
+	// Write to json
+	err = WriteProjectTodoList(projectDirectoryPath, projectName, todoList)
+	if err != nil {
+		return err
 	}
 
 	return nil
