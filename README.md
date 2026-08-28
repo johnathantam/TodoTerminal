@@ -62,8 +62,8 @@ todo task add "Write the README" "Make it look nice"
 # List all tasks
 todo task list
 
-# Mark a task as done
-todo task status <task-id> done
+# Mark a task as in_progress
+todo task status <task-id> in_progress
 
 # See all your projects
 todo project list
