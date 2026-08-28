@@ -80,6 +80,7 @@ todo <command> [arguments]
 | Command | Description |
 |---|---|
 | `init <project-name>` | Initialize a new project |
+| `destroy` (alias: `cleanup`) | Delete the `.todoterminal` directory and all its projects/tasks (prompts for confirmation) |
 
 ### Project Commands
 
@@ -131,6 +132,6 @@ go build -o todo ./cmd/todoterminal
 Releases are built and published automatically via [GoReleaser](https://goreleaser.com/) and GitHub Actions whenever a version tag is pushed:
 
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+git tag v1.0.1
+git push origin v1.0.1
 ```
