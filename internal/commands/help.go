@@ -33,6 +33,10 @@ func Help() error {
 		"init <project-name>",
 		"Initialize a new project",
 	)
+	printCommand(
+		"destroy",
+		"Destroys initialized TodoTerminal package in the working directory",
+	)
 	fmt.Println()
 
 	sectionColor.Println("Project commands:")

@@ -19,58 +19,6 @@ func main() {
 	}
 }
 
-// func run(args []string) error {
-// 	if len(args) < 1 {
-// 		return fmt.Errorf("usage: todo <command>")
-// 	}
-
-// 	commandName := args[0]
-// 	commandArguments := args[1:]
-
-// 	if commandName == "help" {
-// 		return commands.Help()
-// 	}
-
-// 	if commandName == "init" {
-// 		return commands.Init(commandArguments)
-// 	}
-
-// 	appContext, err := app.LoadAppContext()
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	switch commandName {
-
-// 	// Commands related to projects
-// 	case "add-project":
-// 		return projectsCommands.AddProject(appContext, commandArguments)
-// 	case "remove-project":
-// 		return projectsCommands.RemoveProject(appContext, commandArguments)
-// 	case "switch-project":
-// 		return projectsCommands.SwitchProject(appContext, commandArguments)
-// 	case "get-projects":
-// 		return projectsCommands.GetProjectList(appContext, commandArguments)
-
-// 	// Commands related to tasks
-// 	case "add-task":
-// 		return tasksCommands.AddTask(appContext, commandArguments)
-// 	case "remove-task":
-// 		return tasksCommands.RemoveTask(appContext, commandArguments)
-// 	case "get-task":
-// 		return tasksCommands.GetTask(appContext, commandArguments)
-// 	case "get-tasks":
-// 		return tasksCommands.GetTaskList(appContext, commandArguments)
-// 	case "set-task-details":
-// 		return tasksCommands.SetTaskDetails(appContext, commandArguments)
-// 	case "set-task-status":
-// 		return tasksCommands.SetTaskStatus(appContext, commandArguments)
-
-// 	default:
-// 		return fmt.Errorf("unknown command: %q", commandName)
-// 	}
-// }
-
 func run(args []string) error {
 	if len(args) == 0 {
 		return fmt.Errorf("usage: todo <command>")
@@ -86,6 +34,8 @@ func run(args []string) error {
 		return commands.Help()
 	case "init":
 		return commands.Init(commandArguments)
+	case "cleanup", "destroy":
+		return commands.Destroy(commandArguments)
 	}
 
 	// Route all other commands

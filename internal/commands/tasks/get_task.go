@@ -3,6 +3,7 @@ package tasks
 import (
 	"fmt"
 
+	"github.com/fatih/color"
 	"github.com/johnathantam/TodoTerminal/internal/app"
 	"github.com/johnathantam/TodoTerminal/internal/storage"
 )
@@ -34,10 +35,9 @@ func GetTask(appContext app.AppContext, commandArguments []string) error {
 	}
 
 	// view the task
-	fmt.Printf("ID: %s\n", task.ID)
-	fmt.Printf("Title: %s\n", task.Title)
-	fmt.Printf("Description: %s\n", task.Description)
-	fmt.Printf("Status: %s\n", task.Status)
-
+	color.Green("ID: %s\n", task.ID)
+	color.Green("Title: %s\n", task.Title)
+	color.Green("Description: %s\n", task.Description)
+	color.Green("Status: %s\n", task.Status)
 	return nil
 }
