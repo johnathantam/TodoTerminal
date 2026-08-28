@@ -30,6 +30,8 @@ curl -fsSL "$URL" -o "${TMP_DIR}/${ARCHIVE}"
 tar -xzf "${TMP_DIR}/${ARCHIVE}" -C "$TMP_DIR"
 
 echo "Installing to ${INSTALL_DIR}/${BINARY_NAME} (may prompt for sudo)..."
+
+sudo mkdir -p "$INSTALL_DIR"
 sudo mv "${TMP_DIR}/${BINARY_NAME}" "${INSTALL_DIR}/${BINARY_NAME}"
 sudo chmod +x "${INSTALL_DIR}/${BINARY_NAME}"
 
