@@ -9,9 +9,9 @@ $Archive = "TodoTerminal_Windows_x86_64.zip"
 $Url = "https://github.com/$Repo/releases/download/$LatestTag/$Archive"
 
 New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null
-$TmpZip = "$env:TEMP\$Archive"
 
-Write-Host "Downloading todo $LatestTag..."
+$TmpZip = "$env:TEMP\$Archive"
+Write-Host "Downloading todo $LatestTag..." -ForegroundColor Cyan
 Invoke-WebRequest -Uri $Url -OutFile $TmpZip
 Expand-Archive -Path $TmpZip -DestinationPath $InstallDir -Force
 Remove-Item $TmpZip
@@ -19,7 +19,7 @@ Remove-Item $TmpZip
 $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
 if ($UserPath -notlike "*$InstallDir*") {
     [Environment]::SetEnvironmentVariable("Path", "$UserPath;$InstallDir", "User")
-    Write-Host "Added $InstallDir to PATH. Restart your terminal for it to take effect."
+    Write-Host "Added $InstallDir to PATH. Restart your terminal for it to take effect." -ForegroundColor Yellow
 }
 
-Write-Host "Installed! Run 'todo help' to get started."
+Write-Host "Installed! Run 'todo help' to get started." -ForegroundColor Green
