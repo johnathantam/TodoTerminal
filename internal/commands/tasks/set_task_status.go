@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"charm.land/huh/v2"
+	"github.com/fatih/color"
 	"github.com/johnathantam/TodoTerminal/internal/app"
 	"github.com/johnathantam/TodoTerminal/internal/storage"
 	"github.com/johnathantam/TodoTerminal/internal/storage/models"
@@ -66,7 +67,7 @@ func SetTaskStatus(appContext app.AppContext, commandArguments []string) error {
 		return err
 	}
 
-	fmt.Printf("Task %q changed to %q\n", taskID, newStatus)
+	color.Green("Task %q changed to %q\n", taskID, newStatus)
 
 	return nil
 

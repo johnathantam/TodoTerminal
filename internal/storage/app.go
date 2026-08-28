@@ -93,3 +93,19 @@ func CreateAppStructure() (AppPaths, error) {
 		AppConfigPath:            appConfigPath,
 	}, nil
 }
+
+func RemoveAppStructure(appDirectoryPath string) error {
+	if _, err := os.Stat(appDirectoryPath); err != nil {
+		if os.IsNotExist(err) {
+			// Nothing to remove, treat as success
+			return nil
+		}
+		return err
+	}
+
+	if err := os.RemoveAll(appDirectoryPath); err != nil {
+		return err
+	}
+
+	return nil
+}
