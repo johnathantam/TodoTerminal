@@ -1,5 +1,9 @@
 # TodoTerminal
 
+<p align="center">
+  <img src="docs/images/todoTerminal.png" alt="TodoTerminal in action" width="750">
+</p>
+
 A fast, no-frills todo and project manager for your terminal — organize tasks by project, switch contexts like git branches, and never leave the command line.
 
 ## Features
